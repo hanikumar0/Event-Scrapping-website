@@ -209,14 +209,24 @@ async function scrapeEventbrite() {
     }
 }
 
-function startScrapingJob() {
-    cron.schedule('0 */6 * * *', () => {
-        scrapeCityOfSydney();
-        scrapeEventbrite();
-    });
+async function startScrapingJob() {
+    const runAllScrapers = async () => {
+        console.log('--- STARTING SEQUENTIAL SCRAPE CYCLE ---');
+        try {
+            await scrapeCityOfSydney();
+            // Wait 10 seconds between scrapers to let memory settle
+            await new Promise(r => setTimeout(r, 10000));
+            await scrapeEventbrite();
+        } catch (err) {
+            console.error('Master scraper error:', err);
+        }
+    };
 
-    scrapeCityOfSydney();
-    scrapeEventbrite();
+    // Schedule for every 12 hours (Railway free tier has limited compute hours)
+    cron.schedule('0 */12 * * *', runAllScrapers);
+
+    // Initial run
+    runAllScrapers();
 }
 
 module.exports = { startScrapingJob, scrapeCityOfSydney };
