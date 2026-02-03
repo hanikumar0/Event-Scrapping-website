@@ -2,10 +2,16 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
 
 module.exports = function (passport) {
+    // Smart URL detection for production
+    const prodUrl = process.env.BACKEND_URL || (process.env.RAILWAY_STATIC_URL ? `https://${process.env.RAILWAY_STATIC_URL}` : null);
+    const callbackURL = `${prodUrl || 'http://localhost:5000'}/auth/google/callback`;
+
+    console.log(`Passport initializing with Callback URL: ${callbackURL}`);
+
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: `${process.env.BACKEND_URL || 'http://localhost:5000'}/auth/google/callback`
+        callbackURL: callbackURL
     },
         async (accessToken, refreshToken, profile, done) => {
             const newUser = {
