@@ -14,29 +14,22 @@ To host your project for free and show it to recruiters, follow this 3-step guid
 
 ---
 
-## Step 2: Backend (Render.com)
-1.  Push your code to **GitHub**.
-2.  Create an account at [Render](https://render.com/).
-3.  Click **New +** -> **Web Service**.
-4.  Connect your GitHub repository.
-5.  Configure:
-    *   **Name**: `sydevents-api`
-    *   **Root Directory**: `server`
-    *   **Runtime**: `Node`
-    *   **Package Manager**: `npm`
-    *   **Build Command**: `npm install`
-    *   **Start Command**: `node index.js`
-6.  Add **Environment Variables**:
+## Step 2: Backend (Railway.app)
+1.  Log in to [Railway.app](https://railway.app/) using your GitHub account.
+2.  Click **+ New Project** -> **Deploy from GitHub repo**.
+3.  Select your `Event-Scrapping-website` repository.
+4.  In the project settings, set the **Root Directory** to `server`.
+5.  Go to the **Variables** tab and add the following:
     *   `PORT`: `5000`
     *   `MONGODB_URI`: (Your Atlas string from Step 1)
     *   `GOOGLE_CLIENT_ID`: (From Google Console)
     *   `GOOGLE_CLIENT_SECRET`: (From Google Console)
     *   `SESSION_SECRET`: (Any random long string)
-    *   `FRONTEND_URL`: (You will get this in Step 3, e.g., `https://sydevents.vercel.app`)
+    *   `FRONTEND_URL`: `https://event-scrapping-website.vercel.app`
+    *   `BACKEND_URL`: `https://event-scrapping-website-production.up.railway.app`
     *   `EMAIL_USER`: `hanikumar064@gmail.com`
     *   `EMAIL_PASS`: `dazmarwoyotaholq`
-    *   `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD`: `true` (Render installs Chrome via Buildpacks)
-7.  **Important**: In Render Settings, add a **Secret File** or Buildpack for Chrome if the scraper fails. (Render usually works out of the box with `puppeteer`).
+6.  **Railway & Puppeteer**: Railway uses Nixpacks which usually automatically detects Puppeteer and installs Chromium. If the scraper fails, ensure `puppeteer` is in your `package.json` (it is!).
 
 ---
 
@@ -47,7 +40,7 @@ To host your project for free and show it to recruiters, follow this 3-step guid
     *   **Framework Preset**: Vite
     *   **Root Directory**: `client`
 4.  Add **Environment Variables**:
-    *   `VITE_API_URL`: (Your Render URL, e.g., `https://sydevents-api.onrender.com/api`)
+    *   `VITE_API_URL`: `https://event-scrapping-website-production.up.railway.app/api`
 5.  Click **Deploy**.
 
 ---
@@ -56,9 +49,9 @@ To host your project for free and show it to recruiters, follow this 3-step guid
 Once you have your production URLs:
 1.  Go to [Google Cloud Console](https://console.cloud.google.com/).
 2.  Update **Authorized JavaScript origins**:
-    - `https://sydevents.vercel.app`
+    - `https://event-scrapping-website.vercel.app`
 3.  Update **Authorized redirect URIs**:
-    - `https://sydevents-api.onrender.com/auth/google/callback`
+    - `https://event-scrapping-website-production.up.railway.app/auth/google/callback`
 
 ---
 
