@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const connectDB = require('./config/db');
 
 // Initialize Express
@@ -19,16 +20,23 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 }));
 app.use(express.json());
+
+// Session Configuration with MongoDB Store
 app.use(session({
     secret: process.env.SESSION_SECRET || 'syd_events_secret_12345',
-    resave: true,
+    resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        ttl: 24 * 60 * 60 // 1 day
+    }),
     proxy: true,
-    name: 'sydscale_session',
+    name: 'sydevents.sid',
     cookie: {
         secure: true,
         sameSite: 'none',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000, // 24 hours
+        httpOnly: true,
     }
 }));
 app.use(passport.initialize());

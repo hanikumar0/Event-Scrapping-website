@@ -19,9 +19,12 @@ function App() {
 
   const checkUser = async () => {
     try {
+      console.log('Checking authentication at:', `${API_URL}/auth/me`);
       const res = await axios.get(`${API_URL}/auth/me`);
+      console.log('User authenticated:', res.data);
       setUser(res.data);
     } catch (err) {
+      console.error('Authentication check failed:', err.response?.status || err.message);
       setUser(null);
     } finally {
       setLoading(false);
