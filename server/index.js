@@ -7,6 +7,7 @@ const connectDB = require('./config/db');
 
 // Initialize Express
 const app = express();
+app.set('trust proxy', 1);
 
 // Connect Database
 connectDB();
@@ -20,7 +21,11 @@ app.use(express.json());
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    }
 }));
 app.use(passport.initialize());
 app.use(passport.session());

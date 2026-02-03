@@ -21,6 +21,7 @@ To host your project for free and show it to recruiters, follow this 3-step guid
 4.  In the project settings, set the **Root Directory** to `server`.
 5.  Go to the **Variables** tab and add the following:
     *   `PORT`: `5000`
+    *   `NODE_ENV`: `production`
     *   `MONGODB_URI`: (Your Atlas string from Step 1)
     *   `GOOGLE_CLIENT_ID`: (From Google Console)
     *   `GOOGLE_CLIENT_SECRET`: (From Google Console)
@@ -39,6 +40,8 @@ To host your project for free and show it to recruiters, follow this 3-step guid
 3.  Configure:
     *   **Framework Preset**: Vite
     *   **Root Directory**: `client`
+    *   **Build Command**: `npm run build`
+    *   **Output Directory**: `dist` (Vercel usually detects this automatically if Framework is set to Vite)
 4.  Add **Environment Variables**:
     *   `VITE_API_URL`: `https://event-scrapping-website-production.up.railway.app/api`
 5.  Click **Deploy**.
