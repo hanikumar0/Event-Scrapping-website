@@ -16,16 +16,22 @@ connectDB();
 // Middleware
 app.use(cors({
     origin: (origin, callback) => {
-        const frontendUrl = process.env.FRONTEND_URL;
-        // Normalize: remove trailing slash for comparison
-        const normalizedFrontend = frontendUrl?.replace(/\/$/, '');
+        const allowedOrigins = [
+            process.env.FRONTEND_URL,
+            'https://event-scrapping-website.vercel.app',
+            'http://localhost:5173',
+            'http://localhost:3000'
+        ].filter(Boolean).map(url => url.replace(/\/$/, ''));
+
         const normalizedOrigin = origin?.replace(/\/$/, '');
 
-        if (!origin || normalizedOrigin === normalizedFrontend) {
+        if (!origin || allowedOrigins.includes(normalizedOrigin)) {
             callback(null, true);
         } else {
-            console.log(`CORS Blocked for origin: ${origin}`);
-            callback(new Error('Not allowed by CORS'));
+            console.log(`CORS Blocked: ${origin}`);
+            // Pass false instead of an Error to allow the request to fail gracefully
+            // with headers, rather than triggering a generic network error.
+            callback(null, false);
         }
     },
     credentials: true,
