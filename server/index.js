@@ -14,6 +14,16 @@ app.set('trust proxy', 1);
 // Connect Database
 connectDB();
 
+// Crash Protection
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception thrown:', err);
+    // Give it a moment to log before exiting if it's critical
+    setTimeout(() => process.exit(1), 1000);
+});
+
 // Middleware
 // The "Nuclear Option" for CORS - Manual Header Injection
 app.use((req, res, next) => {

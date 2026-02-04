@@ -27,19 +27,17 @@ router.post('/', async (req, res) => {
         // 2. Fetch event details for the email
         const event = await Event.findById(eventId);
         if (event) {
-            console.log(`Event found: ${event.title}. Sending email to ${email}...`);
-            // 3. Trigger email sending
-            const emailSent = await sendTicketEmail(email, event);
-            if (emailSent) {
-                console.log('Email sent successfully');
-            } else {
-                console.error('Email service returned failure');
-            }
+            console.log(`Event found: ${event.title}. Queuing email to ${email}...`);
+            // Fire and forget email for better user experience (site speed)
+            sendTicketEmail(email, event).then(sent => {
+                if (sent) console.log(`Email eventually sent to ${email}`);
+                else console.error(`Email background task failed for ${email}`);
+            }).catch(e => console.error('Email Queuing Error:', e));
         } else {
             console.error(`Event NOT found for ID: ${eventId}`);
         }
 
-        res.json({ msg: 'Subscription successful and email sent!' });
+        res.json({ msg: 'Ticket request received! Check your inbox soon.' });
     } catch (err) {
         console.error('Subscribers Error:', err);
         res.status(500).json({ msg: 'Server error during processing' });
