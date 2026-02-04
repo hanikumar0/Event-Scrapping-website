@@ -27,8 +27,16 @@ router.post('/', async (req, res) => {
         // 2. Fetch event details for the email
         const event = await Event.findById(eventId);
         if (event) {
+            console.log(`Event found: ${event.title}. Sending email to ${email}...`);
             // 3. Trigger email sending
-            await sendTicketEmail(email, event);
+            const emailSent = await sendTicketEmail(email, event);
+            if (emailSent) {
+                console.log('Email sent successfully');
+            } else {
+                console.error('Email service returned failure');
+            }
+        } else {
+            console.error(`Event NOT found for ID: ${eventId}`);
         }
 
         res.json({ msg: 'Subscription successful and email sent!' });
