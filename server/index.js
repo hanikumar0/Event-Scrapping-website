@@ -18,10 +18,10 @@ connectDB();
 app.use((req, res, next) => {
     const origin = req.headers.origin;
     // Allow any origin that is one of our known ones, or just allow all for debugging if needed
-    // For production security, we'll reflect the origin if it exists
-    if (origin) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-    }
+    // For production security, we'll reflect the origin if it exists. 
+    // If undefined (some headers stripped), fallback to the known frontend URL.
+    const allowedOrigin = origin || process.env.FRONTEND_URL || '*';
+    res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
 
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
@@ -80,10 +80,13 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server started on port ${PORT}`);
     console.log(`CORS allowed for: ${process.env.FRONTEND_URL}`);
 
-    // Start Scraper in background after server is up
+    // Start Scraper in background after server is up (extended delay for stability)
     const { startScrapingJob } = require('./services/scraper');
     setTimeout(() => {
-        console.log('--- INITIALIZING BACKGROUND SCRAPER ---');
-        startScrapingJob();
-    }, 5000);
+        // Only run on startup if not in a crash-restart loop (simple heuristic)
+        if (process.uptime() > 30) {
+            console.log('--- INITIALIZING BACKGROUND SCRAPER ---');
+            startScrapingJob();
+        }
+    }, 15000);
 });
