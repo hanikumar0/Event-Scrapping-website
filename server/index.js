@@ -83,10 +83,10 @@ app.listen(PORT, '0.0.0.0', () => {
     // Start Scraper in background after server is up (extended delay for stability)
     const { startScrapingJob } = require('./services/scraper');
     setTimeout(() => {
-        // Only run on startup if not in a crash-restart loop (simple heuristic)
-        if (process.uptime() > 30) {
+        // Only run on startup if not in a crash-restart loop (settle time 60s)
+        if (process.uptime() > 60) {
             console.log('--- INITIALIZING BACKGROUND SCRAPER ---');
             startScrapingJob();
         }
-    }, 15000);
+    }, 60000); // 1 minute delay
 });

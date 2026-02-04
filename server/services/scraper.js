@@ -236,8 +236,8 @@ async function startScrapingJob() {
         }
     };
 
-    // Schedule for every 12 hours (Railway free tier has limited compute hours)
-    cron.schedule('0 */12 * * *', runAllScrapers);
+    // Schedule for every 24 hours (Railway free tier has limited compute hours)
+    cron.schedule('0 0 * * *', runAllScrapers);
 
     // Initial run
     runAllScrapers();
