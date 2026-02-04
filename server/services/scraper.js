@@ -31,13 +31,24 @@ async function scrapeCityOfSydney() {
         ]
     });
     const page = await browser.newPage();
+
+    // REDUCE MEMORY: Block images, CSS, and fonts
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+        if (['image', 'stylesheet', 'font', 'media'].includes(req.resourceType())) {
+            req.abort();
+        } else {
+            req.continue();
+        }
+    });
+
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
 
     try {
-        // Use the configured URL from SCRAPE_URLS[0]
+        // Use domcontentloaded + manual wait instead of networkidle2 (which is memory heavy)
         await page.goto(SCRAPE_URLS[0].url, {
-            waitUntil: 'networkidle2',
-            timeout: 90000
+            waitUntil: 'domcontentloaded',
+            timeout: 60000
         });
 
         // Give it a few seconds to run JS
@@ -149,12 +160,23 @@ async function scrapeEventbrite() {
         ]
     });
     const page = await browser.newPage();
+
+    // REDUCE MEMORY: Block images, CSS, fonts
+    await page.setRequestInterception(true);
+    page.on('request', (req) => {
+        if (['image', 'stylesheet', 'font', 'media'].includes(req.resourceType())) {
+            req.abort();
+        } else {
+            req.continue();
+        }
+    });
+
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
 
     try {
         await page.goto(SCRAPE_URLS[1].url, {
-            waitUntil: 'networkidle2',
-            timeout: 90000
+            waitUntil: 'domcontentloaded',
+            timeout: 60000
         });
 
         // Eventbrite is often slow and heavy on JS
