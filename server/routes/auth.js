@@ -4,7 +4,10 @@ const router = express.Router();
 
 // @desc Auth with Google
 // @route GET /api/auth/google
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google', passport.authenticate('google', {
+    scope: ['profile', 'email'],
+    prompt: 'select_account'
+}));
 
 // @desc Google auth callback
 // @route GET /api/auth/google/callback
@@ -20,7 +23,17 @@ router.get('/google/callback',
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
-        res.redirect(process.env.FRONTEND_URL);
+
+        req.session.destroy((err) => {
+            if (err) console.error('Error destroying session:', err);
+            res.clearCookie('sydevents.sid', {
+                path: '/',
+                secure: true,
+                sameSite: 'none',
+                httpOnly: true
+            });
+            res.redirect(process.env.FRONTEND_URL);
+        });
     });
 });
 

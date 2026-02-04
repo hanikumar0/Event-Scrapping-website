@@ -1,9 +1,10 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
+import { API_URL } from '../App';
 
 const Login = () => {
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/google';
+    window.location.href = `${API_URL}/auth/google`;
   };
 
   return (
@@ -20,7 +21,7 @@ const Login = () => {
 
         <div style={{ marginTop: '1.5rem', fontSize: '0.875rem' }}>
           <p style={{ color: 'var(--text-muted)' }}>
-            Trouble with Google? <a href="http://localhost:5000/api/auth/dev-login" style={{ color: 'var(--primary)', fontWeight: '600' }}>Use Dev Bypass</a>
+            Trouble with Google? <a href={`${API_URL}/auth/dev-login`} style={{ color: 'var(--primary)', fontWeight: '600' }}>Use Dev Bypass</a>
           </p>
         </div>
       </div>

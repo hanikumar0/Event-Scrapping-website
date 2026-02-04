@@ -1,35 +1,36 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, LayoutDashboard, LogOut, User } from 'lucide-react';
+import { API_URL } from '../App';
 
 const Navbar = ({ user }) => {
-    return (
-        <nav className="navbar glass">
-            <div className="container nav-content">
-                <Link to="/" className="logo">
-                    <Calendar size={28} className="logo-icon" />
-                    <span>SydEvents</span>
-                </Link>
+  return (
+    <nav className="navbar glass">
+      <div className="container nav-content">
+        <Link to="/" className="logo">
+          <Calendar size={28} className="logo-icon" />
+          <span>SydEvents</span>
+        </Link>
 
-                <div className="nav-links">
-                    <Link to="/" className="nav-link">Explore</Link>
-                    {user ? (
-                        <>
-                            <Link to="/dashboard" className="nav-link">Dashboard</Link>
-                            <div className="user-profile">
-                                <img src={user.avatar} alt={user.displayName} className="user-avatar" />
-                                <a href="http://localhost:5000/api/auth/logout" className="logout-btn">
-                                    <LogOut size={18} />
-                                </a>
-                            </div>
-                        </>
-                    ) : (
-                        <Link to="/login" className="login-pill">Admin Login</Link>
-                    )}
-                </div>
-            </div>
-            <style dangerouslySetInnerHTML={{
-                __html: `
+        <div className="nav-links">
+          <Link to="/" className="nav-link">Explore</Link>
+          {user ? (
+            <>
+              <Link to="/dashboard" className="nav-link">Dashboard</Link>
+              <div className="user-profile">
+                <img src={user.avatar} alt={user.displayName} className="user-avatar" />
+                <a href={`${API_URL}/auth/logout`} className="logout-btn">
+                  <LogOut size={18} />
+                </a>
+              </div>
+            </>
+          ) : (
+            <Link to="/login" className="login-pill">Admin Login</Link>
+          )}
+        </div>
+      </div>
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .navbar {
           position: sticky;
           top: 0;
@@ -97,8 +98,8 @@ const Navbar = ({ user }) => {
           color: var(--accent);
         }
       `}} />
-        </nav>
-    );
+    </nav>
+  );
 };
 
 export default Navbar;
