@@ -33,7 +33,12 @@ function App() {
     }
   };
 
-  if (loading) return <div className="loading-screen">Loading...</div>;
+  if (loading) return (
+    <div className="loading-screen">
+      <div className="loader" style={{ width: '64px', height: '64px', borderWidth: '4px', borderTopColor: 'var(--primary)' }}></div>
+      <div className="loading-text">AUTHENTICATING SECURE SESSION</div>
+    </div>
+  );
 
   return (
     <Router>

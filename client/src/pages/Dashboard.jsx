@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../App';
-import { Search, Filter, CheckCircle, AlertCircle, Clock, Download, X, Users } from 'lucide-react';
+import { Search, Filter, CheckCircle, AlertCircle, Clock, Download, X, Users, LayoutDashboard, Calendar as CalIcon, Globe, MapPin } from 'lucide-react';
 
 const Dashboard = ({ user }) => {
     const [events, setEvents] = useState([]);
@@ -60,90 +60,99 @@ const Dashboard = ({ user }) => {
 
     const getStatusTag = (status) => {
         switch (status) {
-            case 'new': return <span className="tag new"><Clock size={12} /> New</span>;
-            case 'updated': return <span className="tag updated"><AlertCircle size={12} /> Updated</span>;
-            case 'inactive': return <span className="tag inactive"><X size={12} /> Inactive</span>;
-            case 'imported': return <span className="tag imported"><CheckCircle size={12} /> Imported</span>;
+            case 'new': return <span className="premium-tag tag-new"><Clock size={12} /> New</span>;
+            case 'updated': return <span className="premium-tag tag-updated"><AlertCircle size={12} /> Updated</span>;
+            case 'inactive': return <span className="premium-tag tag-inactive"><X size={12} /> Inactive</span>;
+            case 'imported': return <span className="premium-tag tag-imported"><CheckCircle size={12} /> Imported</span>;
             default: return null;
         }
     };
 
     return (
-        <div className="dashboard-layout">
+        <div className="dashboard-layout fade-in">
+            <div className="mesh-bg">
+                <div className="mesh-circle" style={{ width: '600px', height: '600px', background: 'rgba(99, 102, 241, 0.1)', top: '-10%', right: '10%' }}></div>
+                <div className="mesh-circle" style={{ width: '400px', height: '400px', background: 'rgba(244, 63, 94, 0.05)', bottom: '5%', left: '5%', animationDelay: '-12s' }}></div>
+            </div>
+
             <div className="dashboard-main">
-                <div className="stats-row">
-                    <div className="stat-card glass">
-                        <div className="stat-icon scraped"><Clock size={20} /></div>
-                        <div className="stat-info">
-                            <span className="stat-value">{stats.recentlyScraped}</span>
-                            <span className="stat-label">Scraped (24h)</span>
-                        </div>
+                <div className="stats-header">
+                    <div className="title-area">
+                        <h1>Command Center</h1>
+                        <p>Managing {stats.totalEvents} events across Sydney platform.</p>
                     </div>
-                    <div className="stat-card glass">
-                        <div className="stat-icon new"><AlertCircle size={20} /></div>
-                        <div className="stat-info">
-                            <span className="stat-value">{stats.newEvents}</span>
-                            <span className="stat-label">Pending Review</span>
+                    <div className="stats-row">
+                        <div className="stat-card glass">
+                            <div className="stat-icon scraped"><Clock size={20} /></div>
+                            <div className="stat-info">
+                                <span className="stat-value">{stats.recentlyScraped}</span>
+                                <span className="stat-label">Recently Scraped</span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="stat-card glass">
-                        <div className="stat-icon leads"><Users size={20} /></div>
-                        <div className="stat-info">
-                            <span className="stat-value">{stats.totalLeads}</span>
-                            <span className="stat-label">Total Leads</span>
+                        <div className="stat-card glass">
+                            <div className="stat-icon leads"><Users size={20} /></div>
+                            <div className="stat-info">
+                                <span className="stat-value">{stats.totalLeads}</span>
+                                <span className="stat-label">Subscriber Leads</span>
+                            </div>
                         </div>
-                    </div>
-                    <div className="stat-card glass">
-                        <div className="stat-icon imported"><CheckCircle size={20} /></div>
-                        <div className="stat-info">
-                            <span className="stat-value">{stats.importedEvents}</span>
-                            <span className="stat-label">Imported</span>
+                        <div className="stat-card glass">
+                            <div className="stat-icon imported"><CheckCircle size={20} /></div>
+                            <div className="stat-info">
+                                <span className="stat-value">{stats.importedEvents}</span>
+                                <span className="stat-label">Total Imported</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <header className="dashboard-header">
-                    <h2>Event Pipeline</h2>
+                <header className="dashboard-actions glass">
                     <div className="filter-bar">
-                        <div className="search-input">
+                        <div className="search-input-premium">
                             <Search size={18} />
                             <input
                                 type="text"
-                                placeholder="Search title, venue..."
+                                placeholder="Filter by title, venue..."
                                 value={filters.search}
                                 onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                             />
                         </div>
-                        <select
-                            value={filters.city}
-                            onChange={(e) => setFilters({ ...filters, city: e.target.value })}
-                            className="filter-select"
-                        >
-                            <option value="Sydney">Sydney</option>
-                            <option value="Melbourne">Melbourne</option>
-                        </select>
-                        <select
-                            value={filters.status}
-                            onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                            className="filter-select"
-                        >
-                            <option value="">All Status</option>
-                            <option value="new">New</option>
-                            <option value="updated">Updated</option>
-                            <option value="imported">Imported</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                        <div className="date-filters">
+                        <div className="select-wrapper">
+                            <MapPin size={16} />
+                            <select
+                                value={filters.city}
+                                onChange={(e) => setFilters({ ...filters, city: e.target.value })}
+                                className="filter-select-premium"
+                            >
+                                <option value="Sydney">Sydney</option>
+                                <option value="Melbourne">Melbourne</option>
+                            </select>
+                        </div>
+                        <div className="select-wrapper">
+                            <Filter size={16} />
+                            <select
+                                value={filters.status}
+                                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                                className="filter-select-premium"
+                            >
+                                <option value="">All Status</option>
+                                <option value="new">New Events</option>
+                                <option value="imported">Imported</option>
+                                <option value="inactive">Archived</option>
+                            </select>
+                        </div>
+                        <div className="date-group glass">
+                            <CalIcon size={16} />
                             <input
                                 type="date"
-                                className="filter-date"
+                                className="filter-date-premium"
                                 value={filters.dateStart}
                                 onChange={(e) => setFilters({ ...filters, dateStart: e.target.value })}
                             />
                             <span>to</span>
                             <input
                                 type="date"
-                                className="filter-date"
+                                className="filter-date-premium"
                                 value={filters.dateEnd}
                                 onChange={(e) => setFilters({ ...filters, dateEnd: e.target.value })}
                             />
@@ -151,14 +160,14 @@ const Dashboard = ({ user }) => {
                     </div>
                 </header>
 
-                <div className="table-container glass">
-                    <table className="events-table">
+                <div className="table-container glass modalanim">
+                    <table className="events-table-premium">
                         <thead>
                             <tr>
-                                <th>Title</th>
-                                <th>Source</th>
+                                <th>Event Title</th>
+                                <th>Platform</th>
                                 <th>Status</th>
-                                <th>Actions</th>
+                                <th style={{ textAlign: 'right' }}>Management</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -169,13 +178,20 @@ const Dashboard = ({ user }) => {
                                     onClick={() => setSelectedEvent(event)}
                                 >
                                     <td className="title-cell">{event.title}</td>
-                                    <td>{event.sourceName}</td>
-                                    <td>{getStatusTag(event.status)}</td>
                                     <td>
-                                        {event.status !== 'imported' && (
-                                            <button className="import-btn" onClick={(e) => { e.stopPropagation(); handleImport(event._id); }}>
+                                        <div className="source-pill">
+                                            <Globe size={12} />
+                                            {event.sourceName}
+                                        </div>
+                                    </td>
+                                    <td>{getStatusTag(event.status)}</td>
+                                    <td style={{ textAlign: 'right' }}>
+                                        {event.status !== 'imported' ? (
+                                            <button className="import-btn-premium" onClick={(e) => { e.stopPropagation(); handleImport(event._id); }}>
                                                 <Download size={14} /> Import
                                             </button>
+                                        ) : (
+                                            <span className="imported-check"><CheckCircle size={16} /> Ready</span>
                                         )}
                                     </td>
                                 </tr>
@@ -185,212 +201,139 @@ const Dashboard = ({ user }) => {
                 </div>
             </div>
 
-            <aside className={`preview-panel glass ${selectedEvent ? 'open' : ''}`}>
+            <aside className={`preview-panel-premium glass ${selectedEvent ? 'open' : ''}`}>
                 {selectedEvent ? (
                     <div className="preview-content">
                         <button className="close-preview" onClick={() => setSelectedEvent(null)}>
                             <X size={20} />
                         </button>
-                        <img src={selectedEvent.imageUrl || '/placeholder.jpg'} alt="" />
-                        <h3>{selectedEvent.title}</h3>
-                        <div className="preview-meta">
-                            <p><strong>URL:</strong> <a href={selectedEvent.originalUrl} target="_blank">{selectedEvent.originalUrl}</a></p>
-                            <p><strong>Venue:</strong> {selectedEvent.venueName}</p>
-                            <p><strong>Description:</strong> {selectedEvent.description || 'No description available'}</p>
+                        <div className="preview-image-container">
+                            <img src={selectedEvent.imageUrl || 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=800&q=80'} alt="" />
+                            <div className="image-overlay"></div>
+                        </div>
+                        <div className="preview-body">
+                            <h3>{selectedEvent.title}</h3>
+                            <div className="preview-meta-grid">
+                                <div className="meta-row">
+                                    <Globe size={16} />
+                                    <a href={selectedEvent.originalUrl} target="_blank" rel="noreferrer">Open Source Link</a>
+                                </div>
+                                <div className="meta-row">
+                                    <MapPin size={16} />
+                                    <span>{selectedEvent.venueName || 'Sydney Area'}</span>
+                                </div>
+                                <div className="meta-row">
+                                    <CalIcon size={16} />
+                                    <span>{selectedEvent.date ? new Date(selectedEvent.date).toLocaleString() : 'Date Pending'}</span>
+                                </div>
+                            </div>
+
+                            <div className="preview-description">
+                                <h4>Description</h4>
+                                <p>{selectedEvent.description || 'No detailed description pulled from source yet.'}</p>
+                            </div>
+
                             {selectedEvent.status === 'imported' && (
-                                <div className="import-info">
-                                    <p><strong>Imported At:</strong> {new Date(selectedEvent.importedAt).toLocaleString()}</p>
-                                    <p><strong>Notes:</strong> {selectedEvent.importNotes}</p>
+                                <div className="import-success-box">
+                                    <div className="box-header">
+                                        <CheckCircle size={16} />
+                                        <span>Imported to Platform</span>
+                                    </div>
+                                    <div className="box-body">
+                                        <p><strong>Notes:</strong> {selectedEvent.importNotes || 'No notes provided.'}</p>
+                                        <p className="timestamp">{new Date(selectedEvent.importedAt).toLocaleString()}</p>
+                                    </div>
                                 </div>
                             )}
                         </div>
                     </div>
                 ) : (
                     <div className="preview-empty">
-                        <p>Select an event to see details</p>
+                        <div className="icon-circle" style={{ marginBottom: '1.5rem', background: 'rgba(255,255,255,0.03)' }}>
+                            <LayoutDashboard size={32} style={{ opacity: 0.3 }} />
+                        </div>
+                        <p>Select an event to prioritize or import</p>
                     </div>
                 )}
             </aside>
 
             <style dangerouslySetInnerHTML={{
                 __html: `
-        .dashboard-layout {
-          display: flex;
-          gap: 20px;
-          height: calc(100vh - 100px);
-          padding: 0 20px 20px;
-        }
-        .dashboard-main {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          overflow: hidden;
-        }
-        .dashboard-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .filter-bar {
-          display: flex;
-          gap: 15px;
-        }
-        .search-input {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          background: rgba(255,255,255,0.05);
-          border: 1px solid var(--border);
-          padding: 0.5rem 1rem;
-          border-radius: 8px;
-        }
-        .search-input input {
-          background: none;
-          border: none;
-          color: white;
-          width: 200px;
-        }
-        .filter-select {
-          background: var(--bg-card);
-          color: white;
-          border: 1px solid var(--border);
-          padding: 0.5rem;
-          border-radius: 8px;
-        }
-        .table-container {
-          flex: 1;
-          overflow-y: auto;
-          border-radius: 12px;
-        }
-        .events-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        .events-table th, .events-table td {
-          padding: 1rem;
-          text-align: left;
-          border-bottom: 1px solid var(--border);
-        }
-        .events-table tr { cursor: pointer; transition: background 0.2s; }
-        .events-table tr:hover { background: rgba(255,255,255,0.05); }
-        .events-table tr.active { background: rgba(99, 102, 241, 0.1); }
-        .title-cell { font-weight: 500; }
+        .dashboard-layout { display: flex; gap: 2rem; height: calc(100vh - 120px); padding: 0 2rem 2rem; position: relative; }
+        .dashboard-main { flex: 1; display: flex; flex-direction: column; gap: 2.5rem; overflow: hidden; }
         
-        .tag {
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          padding: 2px 8px;
-          border-radius: 4px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          text-transform: uppercase;
-        }
-        .tag.new { background: #3b82f6; color: white; }
-        .tag.updated { background: #f59e0b; color: white; }
-        .tag.inactive { background: #6b7280; color: white; }
-        .tag.imported { background: #10b981; color: white; }
-
-        .import-btn {
-          background: var(--primary);
-          color: white;
-          padding: 4px 12px;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          font-size: 0.8rem;
-        }
-
-        .date-filters {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: var(--text-muted);
-          font-size: 0.875rem;
-        }
-        .filter-date {
-          background: var(--bg-card);
-          color: white;
-          border: 1px solid var(--border);
-          padding: 0.4rem;
-          border-radius: 8px;
-          font-size: 0.8rem;
-        }
-
-        .preview-panel {
-          width: 400px;
-          border-radius: 12px;
-          overflow-y: auto;
-          position: relative;
-        }
-        .preview-empty {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 100%;
-          color: var(--text-muted);
-        }
-        .preview-content {
-          padding: 1.5rem;
-        }
-        .close-preview {
-          position: absolute;
-          top: 15px;
-          right: 15px;
-          background: none;
-          color: var(--text-muted);
-        }
-        .preview-content img {
-          width: 100%;
-          height: 200px;
-          object-fit: cover;
-          border-radius: 8px;
-          margin-bottom: 1.5rem;
-        }
-        .preview-meta {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-          font-size: 0.9rem;
-        }
-        .preview-meta a { color: var(--primary); word-break: break-all; }
-        .import-info {
-          margin-top: 1rem;
-          padding: 1rem;
-          background: rgba(16, 185, 129, 0.1);
-          border-radius: 8px;
-          border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-        .stats-row {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
-          margin-bottom: 20px;
-        }
-        .stat-card {
-          padding: 1.5rem;
-          display: flex;
-          align-items: center;
-          gap: 15px;
-          border-radius: 16px;
-        }
-        .stat-icon {
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
+        .stats-header { display: flex; justify-content: space-between; align-items: flex-end; }
+        .title-area h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .title-area p { color: #64748b; font-weight: 500; }
+        
+        .stats-row { display: flex; gap: 1.5rem; }
+        .stat-card { padding: 1.25rem 1.75rem; display: flex; align-items: center; gap: 1.25rem; border-radius: 20px; min-width: 200px; }
+        .stat-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
         .stat-icon.scraped { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
-        .stat-icon.new { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        .stat-icon.leads { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
+        .stat-icon.leads { background: rgba(244, 63, 94, 0.1); color: #f43f5e; }
         .stat-icon.imported { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-        .stat-info { display: flex; flex-direction: column; }
-        .stat-value { font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-        .stat-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 1.5rem; font-weight: 800; display: block; }
+        .stat-label { font-size: 0.7rem; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        .dashboard-actions { padding: 1.25rem; border-radius: 24px; }
+        .filter-bar { display: flex; gap: 1rem; align-items: center; }
+        
+        .search-input-premium { display: flex; align-items: center; gap: 0.75rem; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 0.75rem 1.25rem; border-radius: 14px; flex: 1; }
+        .search-input-premium input { background: none; border: none; color: white; width: 100%; font-size: 0.95rem; }
+        .search-input-premium input:focus { outline: none; }
+        .search-input-premium svg { color: #64748b; }
+
+        .select-wrapper { position: relative; display: flex; align-items: center; gap: 0.75rem; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 0.75rem 1rem; border-radius: 14px; }
+        .select-wrapper svg { color: #64748b; }
+        .filter-select-premium { background: none; border: none; color: white; font-size: 0.9rem; font-weight: 600; cursor: pointer; padding-right: 0.5rem; }
+        .filter-select-premium:focus { outline: none; }
+        
+        .date-group { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 14px; color: #64748b; font-size: 0.85rem; }
+        .filter-date-premium { background: none; border: none; color: white; font-size: 0.85rem; cursor: pointer; }
+        
+        .table-container { flex: 1; overflow-y: auto; border-radius: 24px; }
+        .events-table-premium { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .events-table-premium th { position: sticky; top: 0; background: #0f172a; padding: 1.25rem 1.5rem; text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #64748b; border-bottom: 1px solid var(--glass-border); z-index: 10; }
+        .events-table-premium td { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--glass-border); transition: var(--transition); }
+        .events-table-premium tr { cursor: pointer; }
+        .events-table-premium tr:hover td { background: rgba(255,255,255,0.02); }
+        .events-table-premium tr.active td { background: rgba(99, 102, 241, 0.05); border-left: 2px solid var(--primary); }
+        
+        .title-cell { font-weight: 700; color: #f8fafc; font-size: 1rem; }
+        .source-pill { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.75rem; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 10px; font-size: 0.8rem; font-weight: 500; color: #94a3b8; }
+        
+        .premium-tag { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.8rem; border-radius: 10px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+        .tag-new { background: rgba(99, 102, 241, 0.1); color: var(--primary); }
+        .tag-imported { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .tag-inactive { background: rgba(148, 163, 184, 0.1); color: #94a3b8; }
+        
+        .import-btn-premium { background: var(--primary); color: white; padding: 0.6rem 1rem; border-radius: 12px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 700; border: none; cursor: pointer; transition: var(--transition); }
+        .import-btn-premium:hover { transform: translateY(-2px); box-shadow: 0 4px 12px var(--primary-glow); }
+        .imported-check { color: #10b981; font-weight: 700; display: flex; justify-content: flex-end; align-items: center; gap: 0.5rem; }
+
+        .preview-panel-premium { width: 450px; border-radius: 32px; overflow-y: auto; transition: var(--transition); position: relative; }
+        .preview-image-container { position: relative; height: 260px; overflow: hidden; border-radius: 24px; margin: 1.5rem; }
+        .preview-image-container img { width: 100%; height: 100%; object-fit: cover; }
+        .image-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, rgba(15, 23, 42, 0.8)); }
+        
+        .preview-body { padding: 0 2rem 2rem; }
+        .preview-body h3 { font-size: 1.75rem; font-weight: 800; line-height: 1.2; margin-bottom: 2rem; }
+        .preview-meta-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+        .meta-row { display: flex; align-items: center; gap: 1rem; color: #94a3b8; font-weight: 500; font-size: 0.95rem; }
+        .meta-row a { color: var(--primary); text-decoration: none; font-weight: 700; }
+        
+        .preview-description h4 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1.5px; color: #64748b; margin-bottom: 1rem; }
+        .preview-description p { color: #94a3b8; line-height: 1.7; font-size: 1rem; }
+        
+        .import-success-box { margin-top: 2.5rem; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: 20px; overflow: hidden; }
+        .box-header { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.5rem; background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 800; font-size: 0.9rem; text-transform: uppercase; }
+        .box-body { padding: 1.5rem; }
+        .box-body p { margin-bottom: 0.5rem; color: #f8fafc; }
+        .timestamp { font-size: 0.8rem; color: #64748b !important; }
+
+        .preview-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #64748b; font-weight: 600; padding: 3rem; text-align: center; }
+        .close-preview { position: absolute; top: 2rem; right: 2rem; background: rgba(255,255,255,0.05); color: white; border: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 100; transition: var(--transition); }
+        .close-preview:hover { background: var(--accent); }
       `}} />
         </div>
     );
