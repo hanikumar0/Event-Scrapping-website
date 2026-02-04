@@ -14,29 +14,20 @@ app.set('trust proxy', 1);
 connectDB();
 
 // Middleware
+// Standard CORS setup that reflects the origin to allow credentials
 app.use(cors({
-    origin: (origin, callback) => {
-        const allowedOrigins = [
-            process.env.FRONTEND_URL,
-            'https://event-scrapping-website.vercel.app',
-            'http://localhost:5173',
-            'http://localhost:3000'
-        ].filter(Boolean).map(url => url.replace(/\/$/, ''));
-
-        const normalizedOrigin = origin?.replace(/\/$/, '');
-
-        if (!origin || allowedOrigins.includes(normalizedOrigin)) {
-            callback(null, true);
-        } else {
-            console.log(`CORS Blocked: ${origin}`);
-            // Pass false instead of an Error to allow the request to fail gracefully
-            // with headers, rather than triggering a generic network error.
-            callback(null, false);
-        }
-    },
+    origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
 }));
+
+// Request Logger for debugging production issues
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
+    next();
+});
+
 app.use(express.json());
 
 // Session Configuration with MongoDB Store
