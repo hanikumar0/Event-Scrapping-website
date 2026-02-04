@@ -7,17 +7,16 @@ const sendTicketEmail = async (userEmail, event) => {
 
     console.log(`Email Service: Preparing to send to ${userEmail}...`);
     const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        service: 'gmail',
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
         },
-        connectionTimeout: 30000, // 30s
-        greetingTimeout: 30000,  // 30s
-        socketTimeout: 45000,    // 45s
-        pool: false
+        connectionTimeout: 60000,
+        greetingTimeout: 60000,
+        socketTimeout: 60000,
+        debug: true,
+        logger: true
     });
 
     const mailOptions = {
