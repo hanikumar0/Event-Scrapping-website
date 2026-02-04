@@ -45,18 +45,23 @@ async function scrapeCityOfSydney() {
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
 
     try {
-        // Use domcontentloaded + manual wait instead of networkidle2 (which is memory heavy)
         await page.goto(SCRAPE_URLS[0].url, {
             waitUntil: 'domcontentloaded',
             timeout: 60000
         });
 
-        // Give it a few seconds to run JS
-        await new Promise(r => setTimeout(r, 5000));
+        await new Promise(r => setTimeout(r, 7000));
 
-        // Use a more generic wait or check for content
-        await page.waitForSelector('article, a[href*="/events/"]', { timeout: 30000 });
+        // Safety check: is the page still alive?
+        if (page.isClosed()) throw new Error('Page was closed during navigation');
 
+        await page.waitForSelector('article, a[href*="/events/"]', { timeout: 20000 });
+    } catch (err) {
+        console.error('Navigation warning (Sydney):', err.message);
+        // Continue if we have some content, or return empty
+    }
+
+    try {
         const scrapedEvents = await page.evaluate(() => {
             const posters = document.querySelectorAll('a[href*="/events/"]');
             const uniqueEvents = new Map();
@@ -179,12 +184,16 @@ async function scrapeEventbrite() {
             timeout: 60000
         });
 
-        // Eventbrite is often slow and heavy on JS
-        await new Promise(r => setTimeout(r, 8000));
+        await new Promise(r => setTimeout(r, 10000));
 
-        // Wait for potential event containers or links
-        await page.waitForSelector('a[href*="/e/"], .event-card', { timeout: 30000 });
+        if (page.isClosed()) throw new Error('Page was closed during navigation');
 
+        await page.waitForSelector('a[href*="/e/"], .event-card', { timeout: 20000 });
+    } catch (err) {
+        console.error('Eventbrite Navigation warning:', err.message);
+    }
+
+    try {
         const scrapedEvents = await page.evaluate(() => {
             const links = document.querySelectorAll('a[href*="/e/"]');
             const uniqueEvents = new Map();
