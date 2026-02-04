@@ -26,7 +26,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'syd_events_secret_12345',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({
+    store: (MongoStore.create || MongoStore.default.create)({
         mongoUrl: process.env.MONGODB_URI,
         ttl: 24 * 60 * 60 // 1 day
     }),
