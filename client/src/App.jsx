@@ -24,7 +24,9 @@ function App() {
       console.log('User authenticated:', res.data);
       setUser(res.data);
     } catch (err) {
-      console.error('Authentication check failed:', err.response?.status || err.message);
+      if (err.response?.status !== 401) {
+        console.error('Authentication check failed:', err.response?.status || err.message);
+      }
       setUser(null);
     } finally {
       setLoading(false);
