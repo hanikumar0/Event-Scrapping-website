@@ -58,7 +58,9 @@ const Home = () => {
       }, 1500);
     } catch (err) {
       console.error('Subscription error:', err);
-      alert('Could not process request. Please try again.');
+      const errorMsg = err.response?.data?.msg || 'Could not process request. Please try again.';
+      setFormError(errorMsg);
+      // Don't alert, just show the error in the modal
     } finally {
       setSubmitting(false);
     }
