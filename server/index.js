@@ -15,7 +15,19 @@ connectDB();
 
 // Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: (origin, callback) => {
+        const frontendUrl = process.env.FRONTEND_URL;
+        // Normalize: remove trailing slash for comparison
+        const normalizedFrontend = frontendUrl?.replace(/\/$/, '');
+        const normalizedOrigin = origin?.replace(/\/$/, '');
+
+        if (!origin || normalizedOrigin === normalizedFrontend) {
+            callback(null, true);
+        } else {
+            console.log(`CORS Blocked for origin: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 }));
