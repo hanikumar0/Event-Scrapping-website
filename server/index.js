@@ -79,15 +79,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server started on port ${PORT}`);
     console.log(`CORS allowed for: ${process.env.FRONTEND_URL}`);
-
-    // Start Scraper in background after server is up (disabled for site speed)
-    /*
-    const { startScrapingJob } = require('./services/scraper');
-    setTimeout(() => {
-        if (process.uptime() > 60) {
-            console.log('--- INITIALIZING BACKGROUND SCRAPER ---');
-            startScrapingJob();
-        }
-    }, 60000); 
-    */
 });
