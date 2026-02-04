@@ -23,19 +23,21 @@ async function scrapeCityOfSydney() {
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
-            '--disable-gpu',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
             '--no-zygote',
-            '--single-process'
+            '--single-process',
+            '--disable-gpu'
         ]
     });
     const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
 
     try {
-        // Use domcontentloaded for faster entry, then wait for specific content
-        await page.goto('https://whatson.cityofsydney.nsw.gov.au/', {
-            waitUntil: 'domcontentloaded',
-            timeout: 60000
+        // Use the configured URL from SCRAPE_URLS[0]
+        await page.goto(SCRAPE_URLS[0].url, {
+            waitUntil: 'networkidle2',
+            timeout: 90000
         });
 
         // Give it a few seconds to run JS
@@ -139,9 +141,11 @@ async function scrapeEventbrite() {
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
-            '--disable-gpu',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
             '--no-zygote',
-            '--single-process'
+            '--single-process',
+            '--disable-gpu'
         ]
     });
     const page = await browser.newPage();
@@ -149,7 +153,7 @@ async function scrapeEventbrite() {
 
     try {
         await page.goto(SCRAPE_URLS[1].url, {
-            waitUntil: 'domcontentloaded',
+            waitUntil: 'networkidle2',
             timeout: 90000
         });
 
