@@ -24,7 +24,8 @@
     "nodemailer": "^7.0.13",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "puppeteer": "^24.36.1"
+    "puppeteer": "^24.36.1",
+    "resend": "^6.9.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
