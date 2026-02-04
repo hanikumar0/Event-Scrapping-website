@@ -1,51 +1,55 @@
-const { Resend } = require('resend');
+const axios = require('axios');
 const nodemailer = require('nodemailer');
 
 const sendTicketEmail = async (userEmail, event) => {
-    const resendKey = process.env.RESEND_API_KEY;
+    const brevoKey = process.env.BREVO_API_KEY;
 
-    // --- PRODUCTION: Use Resend API (Bypasses SMTP blocks) ---
-    if (resendKey) {
-        console.log(`Email Service: Using Resend API for ${userEmail}...`);
-        const resend = new Resend(resendKey);
+    // --- PRODUCTION: Use Brevo API (HTTP 443 - Bypasses SMTP blocks) ---
+    if (brevoKey) {
+        console.log(`Email Service: Using Brevo API for ${userEmail}...`);
 
         try {
-            const { data, error } = await resend.emails.send({
-                from: 'SydEvents <onboarding@resend.dev>', // Free tier default
-                to: [userEmail],
-                subject: `🎟️ Your Ticket Link: ${event.title}`,
-                html: `
-                    <div style="font-family: sans-serif; padding: 20px; color: #1f2937;">
-                        <h1 style="color: #6366f1;">Your Ticket is Ready!</h1>
-                        <p>Hello,</p>
-                        <p>You requested a ticket link for the following event:</p>
-                        <div style="padding: 15px; background: #f3f4f6; border-radius: 10px; margin: 20px 0;">
-                            <h2 style="margin: 0;">${event.title}</h2>
-                            <p style="color: #64748b;">Venue: ${event.venueName || 'Sydney'}</p>
+            const response = await axios({
+                method: 'post',
+                url: 'https://api.brevo.com/v3/smtp/email',
+                headers: {
+                    'accept': 'application/json',
+                    'api-key': brevoKey,
+                    'content-type': 'application/json'
+                },
+                data: {
+                    sender: { name: "SydEvents", email: "hanikumar064@gmail.com" },
+                    to: [{ email: userEmail }],
+                    subject: `🎟️ Your Ticket Link: ${event.title}`,
+                    htmlContent: `
+                        <div style="font-family: sans-serif; padding: 20px; color: #1f2937;">
+                            <h1 style="color: #6366f1;">Your Ticket is Ready!</h1>
+                            <p>Hello,</p>
+                            <p>You requested a ticket link for the following event:</p>
+                            <div style="padding: 15px; background: #f3f4f6; border-radius: 10px; margin: 20px 0;">
+                                <h2 style="margin: 0;">${event.title}</h2>
+                                <p style="color: #64748b;">Venue: ${event.venueName || 'Sydney'}</p>
+                            </div>
+                            <p>Click the button below to complete your booking:</p>
+                            <a href="${event.originalUrl}" style="display: inline-block; padding: 12px 24px; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">GET TICKETS NOW</a>
                         </div>
-                        <p>Click the button below to complete your booking:</p>
-                        <a href="${event.originalUrl}" style="display: inline-block; padding: 12px 24px; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">GET TICKETS NOW</a>
-                    </div>
-                `
+                    `
+                }
             });
 
-            if (error) {
-                console.error('Resend API Error:', error);
-                return false;
-            }
-            console.log('Email sent via Resend API successfully');
+            console.log('Email sent via Brevo API successfully');
             return true;
         } catch (err) {
-            console.error('Resend Exception:', err);
+            console.error('Brevo API Error:', err.response?.data || err.message);
             return false;
         }
     }
 
     // --- LOCAL DEV: Use SMTP (Allowed on Home Networks) ---
-    console.log(`Email Service: Resend key missing, falling back to SMTP for ${userEmail}...`);
+    console.log(`Email Service: Brevo key missing, falling back to SMTP for ${userEmail}...`);
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
-        port: 587,
+        port: 587, // Standard STARTTLS port
         secure: false,
         auth: {
             user: process.env.EMAIL_USER,
